@@ -4,4 +4,3 @@ textblob
 tweepy
 numpy
 keras
-
