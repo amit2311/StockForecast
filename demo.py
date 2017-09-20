@@ -18,6 +18,7 @@ access_token_secret = ''
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
 user = tweepy.API(auth)
+print(user)
 
 # Where the csv file will live
 FILE_NAME = 'data/historical.csv'
@@ -93,12 +94,12 @@ def stock_prediction():
 # stock_quote = raw_input('Enter a stock quote from NASDAQ (e.j: AAPL, FB, GOOGL): ').upper()
 
 # Check if the stock sentiment is positve
-if not stock_sentiment('FB', num_tweets=100):
+if not stock_sentiment('APPL', num_tweets=100):
     print('This stock has bad sentiment, please re-run the script')
     sys.exit()
 
 # Check if we got te historical data
-if not get_historical('FB'):
+if not get_historical('AAPL'):
     print('Google returned a 404, please re-run the script and')
     print('enter a valid stock quote from NASDAQ')
     sys.exit()
@@ -108,24 +109,33 @@ print(stock_prediction())
 
 # We are done so we delete the csv file
 # os.remove(FILE_NAME)
+#Byu
+def buildNewsUrl(stock) :
+    url = 'http://feeds.finance.yahoo.com/rss/2.0/headline?s='+stock+'&region=US&lang=en-US'
+    return url
 
-parsedNews = feedparser.parse('http://feeds.finance.yahoo.com/rss/2.0/headline?s=FB&region=US&lang=en-US')
-num_of_news = len(parsedNews['entries'])
-positive, null = 0, 0
+#NewsParser Method
+def newsParser(stock) :
+    parsedNews = feedparser.parse(buildNewsUrl(stock))
+    num_of_news = len(parsedNews['entries'])
+    positive, null = 0, 0
 
-for index in range(num_of_news):
-    news = parsedNews['entries'][index]['title'];
-    print("News : " + news)
-    blob = TextBlob(news).sentiment
+    for index in range(num_of_news):
+        news = parsedNews['entries'][index]['title'];
+        print("News : " + news)
+        blob = TextBlob(news).sentiment
     if blob.subjectivity == 0:
         null += 1
         next
     if blob.polarity > 0:
         positive += 1
 
-if positive > ((num_of_news - null) / 2):
-    print('Sentiment is positive')
+    if positive > ((num_of_news - null) / 2):
+        return 'Sentiment is positive'
     # return True
-else:
-    print('Sentiment is negative')
+    else:
+        return 'Sentiment is negative'
 
+
+#Call buildNewsURL
+print (newsParser("APPL"))
