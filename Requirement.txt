@@ -1,0 +1,7 @@
+jupyter
+feedparser
+textblob
+tweepy
+numpy
+keras
+
