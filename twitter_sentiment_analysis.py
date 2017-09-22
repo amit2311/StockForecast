@@ -5,10 +5,10 @@ from textblob import TextBlob
 
 class TwitterClient(object):
     # keys and tokens from the Twitter Dev Console
-    consumer_key = 'NPzWiMy2HOcTsrBZC2OAWVitO'
-    consumer_secret = 'wHbl7258GFSDBUVAV2Jfgg2zYNZqxGxETsuUjmyePvkUtsiZba'
-    access_token = '231076651-5AXfMeLS8Tk9b7Q8l2cN0o9uAyUdkpXKrdrtuz2T'
-    access_token_secret = 'ShjxWkgJdqWJC0ffaBC3lGQJt2lAGwqjZWUG25lXoYxcS'
+    consumer_key = ''
+    consumer_secret = ''
+    access_token = ''
+    access_token_secret = ''
     positive_tweets = []
     negative_tweets = []
     neutral_tweets = []
