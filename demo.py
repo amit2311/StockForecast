@@ -1,53 +1,18 @@
-import os
-import feedparser
-from textblob import TextBlob
 import sys
-import tweepy
 import requests
 import numpy as np
 
 from keras.models import Sequential
 from keras.layers import Dense
 
-# First we login into twitter
-# First we login into twitter
-consumer_key = ''
-consumer_secret = ''
-access_token = ''
-access_token_secret = ''
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
-user = tweepy.API(auth)
-print(user)
 
 # Where the csv file will live
 FILE_NAME = 'data/historical.csv'
 
 
-def stock_sentiment(quote, num_tweets):
-    # Checks if the sentiment for our quote is
-
-    # positive or negative, returns True if
-    # majority of valid tweets have positive sentiment
-    list_of_tweets = user.search(quote, count=num_tweets)
-    positive, null = 0, 0
-
-    for tweet in list_of_tweets:
-        print("---------------" + tweet.text)
-        blob = TextBlob(tweet.text).sentiment
-        if blob.subjectivity == 0:
-            null += 1
-            next
-        if blob.polarity > 0:
-            positive += 1
-
-    if positive > ((num_tweets - null) / 2):
-        return True
-
-
-def get_historical(quote):
+def get_historical_India(quote):
     # Download our file from google finance
-    url = 'http://www.google.com/finance/historical?q=NASDAQ%3A' + quote + '&output=csv'
+    url = 'https://www.alphavantage.co/query?function=TIME_SERIES_MONTHLY&symbol='+quote+'&apikey=3FGHYHL0CV6P6P04&datatype=csv'
     r = requests.get(url, stream=True)
 
     if r.status_code != 400:
@@ -56,6 +21,19 @@ def get_historical(quote):
                 f.write(chunk)
 
         return True
+
+#Not using anymore
+# def get_historical(quote):
+#     # Download our file from google finance
+#     url = 'http://www.google.com/finance/historical?q=NASDAQ%3A' + quote + '&output=csv'
+#     r = requests.get(url, stream=True)
+#
+#     if r.status_code != 400:
+#         with open(FILE_NAME, 'wb') as f:
+#             for chunk in r:
+#                 f.write(chunk)
+#
+#         return True
 
 
 def stock_prediction():
@@ -68,7 +46,7 @@ def stock_prediction():
                 dataset.append(float(line.split(',')[1]))
 
     dataset = np.array(dataset)
-
+    print(dataset)
     # Create dataset matrix (X=t and Y=t+1)
     def create_dataset(dataset):
         dataX = [dataset[n + 1] for n in range(len(dataset) - 2)]
@@ -90,52 +68,13 @@ def stock_prediction():
     return result
 
 
-# Ask user for a stock quote
-# stock_quote = raw_input('Enter a stock quote from NASDAQ (e.j: AAPL, FB, GOOGL): ').upper()
-
-# Check if the stock sentiment is positve
-if not stock_sentiment('APPL', num_tweets=100):
-    print('This stock has bad sentiment, please re-run the script')
-    sys.exit()
-
 # Check if we got te historical data
-if not get_historical('AAPL'):
+if not get_historical_India('NSE:INFY'):
     print('Google returned a 404, please re-run the script and')
     print('enter a valid stock quote from NASDAQ')
     sys.exit()
 
+
 # We have our file so we create the neural net and get the prediction
 print(stock_prediction())
-
-# We are done so we delete the csv file
-# os.remove(FILE_NAME)
-#Byu
-def buildNewsUrl(stock) :
-    url = 'http://feeds.finance.yahoo.com/rss/2.0/headline?s='+stock+'&region=US&lang=en-US'
-    return url
-
-#NewsParser Method
-def newsParser(stock) :
-    parsedNews = feedparser.parse(buildNewsUrl(stock))
-    num_of_news = len(parsedNews['entries'])
-    positive, null = 0, 0
-
-    for index in range(num_of_news):
-        news = parsedNews['entries'][index]['title'];
-        print("News : " + news)
-        blob = TextBlob(news).sentiment
-    if blob.subjectivity == 0:
-        null += 1
-        next
-    if blob.polarity > 0:
-        positive += 1
-
-    if positive > ((num_of_news - null) / 2):
-        return 'Sentiment is positive'
-    # return True
-    else:
-        return 'Sentiment is negative'
-
-
-#Call buildNewsURL
-print (newsParser("APPL"))
+print('Stock prediction done.')
