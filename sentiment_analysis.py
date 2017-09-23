@@ -1,4 +1,5 @@
 import re
+import math
 import tweepy
 import feedparser
 from tweepy import OAuthHandler
@@ -92,9 +93,9 @@ class TwitterClient(object):
         negative_news_count = len(self.negative_news)
         neutral_news_count = len(self.neutral_news)
 
-        news_sentiment['positive_per'] = (100 * (positive_news_count / total_news_count))
-        news_sentiment["negative_per"] = (100 * (negative_news_count / total_news_count))
-        news_sentiment["neutral_per"] = (100 * (neutral_news_count / total_news_count))
+        news_sentiment['positive_per'] = round(100 * (positive_news_count / total_news_count), 2)
+        news_sentiment["negative_per"] = round(100 * (negative_news_count / total_news_count), 2)
+        news_sentiment["neutral_per"] = round(100 * (neutral_news_count / total_news_count), 2)
 
         news_sentiment["positive_count"] = positive_news_count
         news_sentiment["negative_count"] = negative_news_count
@@ -128,9 +129,9 @@ class TwitterClient(object):
         negative_tweet_count = len(self.negative_tweets)
         neutral_tweet_count = len(self.neutral_tweets)
 
-        tweet_sentiment["positive_per"] = (100 * (positive_tweet_count / total_tweet_count))
-        tweet_sentiment["negative_per"] = (100 * (negative_tweet_count / total_tweet_count))
-        tweet_sentiment["neutral_per"] = (100 * (neutral_tweet_count / total_tweet_count))
+        tweet_sentiment["positive_per"] = round(100 * (positive_tweet_count / total_tweet_count), 2)
+        tweet_sentiment["negative_per"] = round (100 * (negative_tweet_count / total_tweet_count), 2)
+        tweet_sentiment["neutral_per"] =  round(100 * (neutral_tweet_count / total_tweet_count), 2)
 
         tweet_sentiment["positive_count"] = positive_tweet_count
         tweet_sentiment["negative_count"] = negative_tweet_count
